@@ -1,0 +1,22 @@
+{% extends "layout.html" %} {% block title %} Makaleler {% endblock title %} {%
+block container %}
+<div class="container">
+  {% if articles %} {% for article in articles[::-1] %}
+  <article lang="tr-TR">
+    <h1><a href="/article/{{article.id}}">{{article.title}}</a></h1>
+    <h5>
+      Added by
+      <span><a href="{{article.author}}">{{article.author}}</a></span> |
+      {{article.created_date | timeAgo}}
+    </h5>
+    <img src="{{article.image_source}}" style="object-position: 50% 18%" />
+    <p>{{article.content[:800]}}...</p>
+    <a href="/article/{{article.id}}">Devamını Oku</a>
+  </article>
+  {% endfor %} {% else %}
+  <article>
+    <h1>Herhangi Bir Makale Bulunmuyor</h1>
+  </article>
+  {% endif %}
+</div>
+{% endblock container %}

@@ -1,0 +1,105 @@
+{% extends "layout.html" %} {% block title %}
+Hesap Ayarları
+{% endblock title %} 
+{% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/dashboard.css') }}"
+/>
+{% endblock link %} 
+{% block container %} {% from "includes/formhelpers.html"
+import render_field %}
+<section class="account-content">
+  <header class="header-container">
+    <h1>Account Settings</h1>
+    <h4>Edit your name, avatar etc.</h4>
+  </header>
+
+  <article class="main-content">
+    <form method="POST" class="user-info-form">
+      {{ form.csrf_token }}
+      <ul>
+      {% if picture_url %}
+        <li>
+          <label for="username">Full Name</label>
+          {{ render_field(form.fullname,placeholder="Enter fullname",autocomplete="off",readonly=True) }}
+        </li>
+        <li>
+          <label for="password">User Name</label>
+          {{ render_field(form.username,placeholder="Enter username",autocomplete="off") }}
+        </li>
+        <li>
+          <label for="email">Email Address</label>
+          {{ render_field(form.email,placeholder="Enter email address",autocomplete="off",type="email",readonly=True) }}
+        </li>
+      {% else %}
+        <li>
+          <label for="username">Full Name</label>
+          {{ render_field(form.fullname,placeholder="Enter fullname",autocomplete="off") }}
+        </li>
+        <li>
+          <label for="password">User Name</label>
+          {{ render_field(form.username,placeholder="Enter username",autocomplete="off") }}
+        </li>
+        <li>
+          <label for="email">Email Address</label>
+          {{ render_field(form.email,placeholder="Enter email address",autocomplete="off",type="email") }}
+        </li>
+        <li>
+          <label for="password">Password</label>
+          {{ render_field(form.password,placeholder="Enter new password",autocomplete="off",type="password") }}
+          <h5 id="seePassword">Şifreyi Gör</h5>
+        </li>
+      {% endif %}
+
+        <li>
+          <a href="#"><h4>Delete Your Account</h4></a>
+          <p>
+You will receive an email to confirm your decision. Please note,
+that all boards you have created will be permanently erased.
+          </p>
+        </li>
+        <li>
+          <button class="cancel" type="reset">Temizle</button>
+          <button class="save" type="submit">Bilgileri Kaydet</button>
+        </li>
+      </ul>
+    </form>
+
+
+    <form action="/upload_image?query=profile" method="post" enctype=multipart/form-data class="upload-pic-form">
+
+      <div class="upload-pic">
+        <div class="main-avatar">
+          <img src="{{ session['user_img'] }}" />
+        </div>
+        <div class="image-file-input">          
+          <input type="file" name="image_file">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        </div>
+        <button type="submit">Upload a picture</button>
+      </div>
+    </form>
+
+  </article>
+</section>
+{% endblock container %}
+
+{% block script %} 
+<script>
+  const seePassword = document.getElementById("seePassword");
+  const inputPassword = document.getElementById("password");
+
+  seePassword.addEventListener('click',()=>{
+    if (inputPassword.getAttribute("type")=="password"){
+      inputPassword.setAttribute("type","text")
+      seePassword.textContent = "Şifreyi Gizle"
+    } else {
+      inputPassword.setAttribute("type","password")
+      seePassword.textContent = "Şifreyi Gör"
+    }
+  });
+
+</script>
+{% endblock script %}

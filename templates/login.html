@@ -1,0 +1,39 @@
+{% extends "layout.html" %} {% block title %} Giriş Yap {% endblock title %} {%
+block container %} {% from "includes/formhelpers.html" import render_field %}
+<div class="login-content">
+  <div class="login-menu">
+    <h2>Log in with</h2>
+    <div class="login-social">
+      <a href="/login_google">
+        <img
+          src="{{ url_for('static', filename='icons/Google.svg') }}"
+          alt=""
+        />
+        Google
+      </a>
+      <a href="">
+        <img
+          src="{{ url_for('static', filename='icons/Facebook-login.svg') }}"
+          alt=""
+        />
+        Facebook
+      </a>
+    </div>
+    <h5>or</h5>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="username">User Name</label>
+      {{ render_field(form.username,placeholder="Enter
+      username",autocomplete="off") }}
+      <label for="password">Password</label>
+      {{ render_field(form.password,placeholder="Enter
+      password",autocomplete="off",type="password") }}
+      <button type="submit">Log in</button>
+    </form>
+  </div>
+  <blockquote>
+    Don't have an account? <a href="/register">Sign up</a>
+  </blockquote>
+</div>
+
+{% endblock container %}

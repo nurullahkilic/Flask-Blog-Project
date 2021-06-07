@@ -1,0 +1,80 @@
+{% extends "layout.html" %} {% block title %} Makale Ekle {% endblock title %}
+{% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/article.css') }}"
+/>
+
+{% endblock link %} {% block container %} {% from "includes/formhelpers.html"
+import render_field %}
+
+<form
+  data-type="update"
+  {%
+  if
+  article.is_publish
+  %}
+  data-publish="true"
+  {%
+  else
+  %}
+  data-publish="false"
+  {%
+  endif
+  %}
+>
+  <article>
+    <span
+      class="textarea"
+      role="textbox"
+      id="header"
+      spellcheck="false"
+      contenteditable
+    ></span>
+    <div class="article-actions">
+      {% if article.is_publish %}
+      <button type="submit" class="article-follow article-success">
+        Değişiklikleri Kaydet
+      </button>
+      {% else %}
+      <button
+        type="button"
+        class="article-follow article-success"
+        id="publishDraft"
+      >
+        Taslağı Yayınla
+      </button>
+      <button type="submit" class="article-follow article-primary">
+        Değişiklikleri Kaydet
+      </button>
+      {% endif %}
+    </div>
+  </article>
+  <div
+    class="article-image"
+    style="
+    background: url('{{article.thumbnail}}')
+      no-repeat center center / cover;
+  "
+  >
+    <input
+      class="article-follow article-primary"
+      id="linkImg"
+      placeholder="Görsel Linki"
+      name="image"
+      value="{{article.thumbnail}}"
+    />
+  </div>
+  <input type="hidden" value="{{article.id}}" id="articleId" />
+  <div id="editor" spellcheck="false">{{article.content | safe}}</div>
+</form>
+
+{% endblock container %} {% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="{{url_for('static', filename='build/ckeditor.js')}}"></script>
+<script src="{{url_for('static', filename='script/addarticle.js')}}"></script>
+<script>
+  title.textContent = "{{article.title|safe}}";
+</script>
+{% endblock script %}

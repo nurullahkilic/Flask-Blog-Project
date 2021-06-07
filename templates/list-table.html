@@ -1,0 +1,165 @@
+{% extends "list.html" %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/list.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/product-table.css') }}"
+/>
+{% endblock link %} {% block container %}
+<div class="table-items">
+  {% if list.get_items() %} {% for item in list.get_items() %}
+
+  <div
+    class="table-inner"
+    style="
+      background: linear-gradient(
+          360deg,
+          rgba(24, 24, 24, 0.95) 0%,
+          rgba(0, 0, 0, 0) 80.77%
+        ),
+        url('https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces/{{item.item.backdrop}}')
+          no-repeat center center / cover;
+      background-blend-mode: multiply;
+    "
+  >
+    <div class="table-text">
+      <div class="text-top">
+        <span class="stick"></span>
+        <h4>
+          {{item.item.director or ""}} ({{item.item.created_date | getYear or
+          ""}})
+        </h4>
+      </div>
+      <h2>{{item.item.title or item.item.original_name}}</h2>
+    </div>
+    <a href="/{{item.type}}/{{item.item.id}}"></a>
+    <div class="table-actions">
+    {% if list.is_owner(session["user_id"]) %}
+      <div class="actions-btn">
+        <div data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                class="btn-inner add-watchlist-drop">
+          <i class="bx bxs-bookmark-alt"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>İzleme Listene Ekle!</div>
+        </div>
+      </div>
+      <div class="actions-btn">
+        <div data-id="{{item.item.id}}"
+        {% if item.type == "movies" %}
+        data-type="1"
+        {% else %}
+        data-type="2"
+        {% endif %}                
+        data-list="{{list.id}}"
+        class="btn-inner remove-list-drop">
+          <i style="font-size: 31px !important" class="bx bx-list-minus"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>Listenden Kaldır!</div>
+        </div>
+      </div>
+    {% else %}
+      <div class="actions-btn">
+        <div data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                class="btn-inner add-watchlist-drop">
+          <i class="bx bxs-bookmark-alt"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>İzleme Listene Ekle!</div>
+        </div>
+      </div>
+    {% endif %}
+      <div class="actions-btn">
+        <div data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                data-user="{{session['user_id']}}" class="btn-inner add-list-drop">
+          <i style="font-size: 31px !important" class="bx bx-list-plus"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>Listene Ekle!</div>
+        </div>
+      </div>
+    </div>
+    <div class="table-rate"></div>
+  </div>
+  {% endfor %} {% else %}
+  <div
+    class="table-inner"
+    style="
+      background: linear-gradient(
+          360deg,
+          rgba(24, 24, 24, 0.95) 0%,
+          rgba(0, 0, 0, 0) 80.77%
+        ),
+        url('https://www.themoviedb.org/t/p/original/loRmRzQXZeqG78TqZuyvSlEQfZb.jpg')
+          no-repeat center center / cover;
+      background-blend-mode: multiply;
+    "
+  >
+    <div class="table-text">
+      <div class="text-top">
+        <span class="stick"></span>
+        <h4>
+          {{item.item.director or ""}} ({{item.item.created_date | getYear or
+          ""}})
+        </h4>
+      </div>
+      <h2>Listede herhahngi bir içerik bulunmuyor!</h2>
+    </div>
+    <a href=""></a>
+    <div class="table-actions">
+      <div class="actions-btn">
+        <div class="btn-inner">
+          <i class="bx bxs-trash"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>İzleme Listenden Kaldır!</div>
+        </div>
+      </div>
+      <div class="actions-btn">
+        <div class="btn-inner">
+          <i class="bx bxs-bookmark-alt"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>İzleme Listene Ekle!</div>
+        </div>
+      </div>
+      <div class="actions-btn">
+        <div class="btn-inner">
+          <i style="font-size: 31px !important" class="bx bx-list-plus"></i>
+        </div>
+        <div class="table-dropdown-content">
+          <div>Listene Ekle!</div>
+        </div>
+      </div>
+    </div>
+    <div class="table-rate"></div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock container %}
+
+
+ {% block script %}
+<script src="{{url_for('static', filename='script/list_actions_table.js')}}"></script>
+{% endblock script %}

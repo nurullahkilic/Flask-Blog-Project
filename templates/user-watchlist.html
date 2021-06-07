@@ -1,0 +1,193 @@
+{% extends "user.html" %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-style.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/loader.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/product-table.css') }}"
+/>
+{% endblock link %} {% block buttons %} {% endblock buttons %} {% block
+bottomPanel %}
+<div class="product-table-container">
+  <div class="go-back">
+    <a href="/@{{user.username}}">
+      <i class="bx bx-undo bx-tada-hover"></i>
+      <h3>Profile Geri Dön</h3>
+    </a>
+  </div>
+  <div class="table-items">
+    {% if watchlist %} 
+    {% if watchlist.get_items() %}
+    {% for item in watchlist.get_items()[::-1][:9]%}
+    <div
+      class="table-inner"
+      style="
+        background: linear-gradient(
+            360deg,
+            rgba(24, 24, 24, 0.95) 0%,
+            rgba(0, 0, 0, 0) 80.77%
+          ),
+          url('https://www.themoviedb.org/t/p/w780{{item.item.backdrop}}')
+            no-repeat center center / cover;
+        background-blend-mode: multiply;
+      "
+    >
+      <div class="table-text">
+        <div class="text-top">
+          <span class="stick"></span>
+          <h4>
+            {{item.item.director or ""}} ({{item.item.created_date | getYear or
+            ""}})
+          </h4>
+        </div>
+        <h2>{{item.item.title or item.item.original_name}}</h2>
+      </div>
+      <a href="/{{item.type}}/{{item.item.id}}"></a>
+      <div class="table-actions">
+        {% if user.id==session["user_id"] %}
+        <div class="actions-btn">
+          <div class="btn-inner remove-watchlist-profile">
+            <i data-id="{{item.item.id}}"
+            {% if item.type == "movies" %}
+            data-type="1"
+            {% else %}
+            data-type="2"
+            {% endif %}               
+             class="bx bxs-trash"></i>
+          </div>
+          <div class="table-dropdown-content">
+            <div>İzleme Listenden Kaldır!</div>
+          </div>
+        </div>
+        {% else %}
+        <div class="actions-btn">
+          <div class="btn-inner add-watchlist-profile">
+            <i data-id="{{item.item.id}}"
+            {% if item.type == "movies" %}
+            data-type="1"
+            {% else %}
+            data-type="2"
+            {% endif %}
+            class="bx bxs-bookmark-alt"></i>
+          </div>
+          <div class="table-dropdown-content">
+            <div>İzleme Listene Ekle!</div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="actions-btn add-list-profile">
+          <div class="btn-inner">
+            <i data-id="{{item.item.id}}"
+            {% if item.type == "movies" %}
+            data-type="1"
+            {% else %}
+            data-type="2"
+            {% endif %}                
+            data-user="{{session['user_id']}}" style="font-size: 31px !important" class="bx bx-list-plus"></i>
+          </div>
+          <div class="table-dropdown-content">
+            <div>Listene Ekle!</div>
+          </div>
+        </div>
+      </div>
+      <div class="table-rate"></div>
+    </div>
+    {% endfor %}
+    {% else %}
+     <div
+      class="table-inner"
+      style="
+        background: linear-gradient(
+            360deg,
+            rgba(24, 24, 24, 1) 0%,
+            rgba(0, 0, 0, 0.4) 80.77%
+          ),
+          url('') no-repeat center center / cover;
+        background-blend-mode: multiply;
+      "
+    >
+      <div class="table-text">
+        <div class="text-top">
+          <span class="stick"></span>
+          <h4>{{user.fullname}}</h4>
+        </div>
+        <h2>İzleme listesinde herhangi bir içerik bulunmuyor!</h2>
+      </div>
+      <a href=""></a>
+    </div>
+    {% endif %}
+     {% else %}
+    <div
+      class="table-inner"
+      style="
+        background: linear-gradient(
+            360deg,
+            rgba(24, 24, 24, 1) 0%,
+            rgba(0, 0, 0, 0.4) 80.77%
+          ),
+          url('') no-repeat center center / cover;
+        background-blend-mode: multiply;
+      "
+    >
+      <div class="table-text">
+        <div class="text-top">
+          <span class="stick"></span>
+          <h4>{{user.fullname}}</h4>
+        </div>
+        <h2>İzleme listesinde herhangi bir içerik bulunmuyor!</h2>
+      </div>
+      <a href=""></a>
+    </div>
+    {% endif %}
+  </div>
+  <div id="loadMore">
+    <div class="loader-container">
+      <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock bottomPanel %} 
+
+{% block popup %}
+
+<div class="popup-container" id="popup-container-user-list">
+    <div class="popup">
+      <div class="popup-inner">
+        <div class="popup-header">
+          <h1>Listelerin</h1>
+          <i class="bx bx-x"></i>
+        </div>
+        <div class="content" id="listContent">     
+        </div>
+      </div>
+    </div>
+
+{% endblock popup %}   
+
+{% block script %}
+<script src="{{url_for('static', filename='script/observer.js')}}"></script>
+<script src="{{url_for('static', filename='script/product-table.js')}}"></script>
+<script>
+  const session_username = "{{session['username']|safe}}";
+  const session_userid = "{{session['user_id']|safe}}";
+  const list_userid = "{{user.id|safe}}";
+</script>
+{% endblock script %}

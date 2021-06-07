@@ -1,0 +1,7 @@
+{% extends "layout.html" %} {% block title %} Ana Sayfa {% endblock title %} {%
+block container %}
+<h1>Ana Sayfa olcak burası</h1>
+{{session["user"]}}
+<br />
+<br />
+{{session["user_id"]}} {% endblock container %}

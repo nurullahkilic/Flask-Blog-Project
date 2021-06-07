@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{% block title %} {% endblock title %} · Rows</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='icons/logo.svg') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/boxicons.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='build/snackbar.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/navbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/bottom-bar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/blog-style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/popup.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/swall2.css') }}"
+    />
+
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-198275127-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-198275127-1");
+    </script>
+
+    {% block link %} {% endblock link %}
+  </head>
+  <body>
+    <!-- <div
+      id="g_id_onload"
+      data-client_id="44482969787-5trlkj01opuc6fi0l26h204joa6em4hm.apps.googleusercontent.com"
+      data-login_uri="https://localhost:5000/login_google"
+    ></div> -->
+
+    {% include "includes/navbar.html" %} {% block body_head %} {% endblock
+    body_head %}
+    <div class="container">
+      {% include "includes/messages.html" %} {% block container %} {% endblock
+      container %}
+    </div>
+    {% block popup %} {% endblock popup %}
+  </body>
+  <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+  <script src="{{ url_for('static',filename='build/snackbar.min.js') }}"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="{{url_for('static', filename='script/navbar.js')}}"></script>
+  <script src="{{url_for('static', filename='script/popup.js')}}"></script>
+  <script>
+    const csrf_token = "{{ csrf_token() }}";
+    const hostname = window.location.hostname;
+  </script>
+  {% block script %} {% endblock script %}
+</html>

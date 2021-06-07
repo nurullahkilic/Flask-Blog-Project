@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block title %} Kayıt Ol {% endblock title %} {%
+block container %} {% from "includes/formhelpers.html" import render_field %}
+<div class="login-content">
+  <div class="login-menu">
+    <h2>Kayıt Ol</h2>
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label for="fullname">Full Name</label>
+      {{ render_field(form.fullname,placeholder="Enter
+      fullname",autocomplete="off") }}
+      <label for="username">User Name</label>
+      {{ render_field(form.username,placeholder="Enter
+      username",autocomplete="off") }}
+      <label for="email">E-mail</label>
+      {{ render_field(form.email,placeholder="Enter email
+      address",autocomplete="off",type="email") }}
+      <label for="password">Password</label>
+      {{ render_field(form.password,placeholder="Enter
+      password",autocomplete="off",type="password") }}
+      <label for="password">Password Confirm</label>
+      {{render_field(form.confirm,placeholder="Enter password
+      again",autocomplete="off",type="password") }}
+      <button type="submit">Sign up</button>
+    </form>
+  </div>
+  <blockquote>Do have an account? <a href="/login">Log in</a></blockquote>
+</div>
+
+{% endblock container %}

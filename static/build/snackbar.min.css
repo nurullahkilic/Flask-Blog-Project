@@ -1,0 +1,109 @@
+.snackbar-container {
+  transition: all 0.5s ease;
+  transition-property: top, right, bottom, left, opacity;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 15px !important;
+  min-height: 14px;
+  background-color: #070b0e;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  line-height: 22px;
+  padding: 18px 24px;
+  bottom: -100px;
+  top: -100px;
+  opacity: 0;
+  z-index: 9999999;
+}
+
+.snackbar-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block;
+  width: 4px;
+  height: 35px;
+  border-radius: 0 4px 4px 0;
+  background-color: #90da54;
+}
+
+.snackbar-container .action {
+  background: inherit;
+  display: inline-block;
+  border: none;
+  font-size: inherit;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  color: #90da54;
+  margin: 0 0 0 24px;
+  padding: 0;
+  min-width: min-content;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .snackbar-container {
+    min-width: 288px;
+    max-width: 568px;
+    display: inline-flex;
+    border-radius: 8px;
+    margin: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .snackbar-container {
+    width: 95% !important;
+    border-radius: 8px;
+  }
+  .snackbar-pos.top-center {
+    bottom: auto !important;
+    top: 15px !important;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
+.snackbar-pos.bottom-center {
+  top: auto !important;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+.snackbar-pos.bottom-left {
+  top: auto !important;
+  bottom: 0;
+  left: 0;
+}
+.snackbar-pos.bottom-right {
+  top: auto !important;
+  bottom: 0;
+  right: 0;
+}
+.snackbar-pos.top-left {
+  bottom: auto !important;
+  top: 0;
+  left: 0;
+}
+.snackbar-pos.top-center {
+  bottom: auto !important;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+.snackbar-pos.top-right {
+  bottom: auto !important;
+  top: 0;
+  right: 0;
+}
+
+/* @media (max-width: 640px) {
+  .snackbar-pos.bottom-center,
+  .snackbar-pos.top-center {
+    left: 0;
+    transform: none;
+  }
+} */

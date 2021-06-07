@@ -1,0 +1,322 @@
+{% extends "layout.html" %} {% block title %} {{product.title}} {% endblock title
+%} {% block link %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/product.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='styles/loader.css') }}"
+    />
+    <link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/comment.css') }}"
+/>
+ {% endblock link %} {% block body_head %}
+<div class="hackdrop"></div>
+<div
+  class="backdrop-image"
+  style="
+    background: linear-gradient(
+        90deg,
+        #181818 11.86%,
+        rgba(0, 0, 0, 0.4) 77.55%
+      ),
+      url('https://www.themoviedb.org/t/p/w1280{{product.backdrop}}')
+        no-repeat center center / cover;
+  "
+>
+  <div class="backdrop-inner">
+    <img
+      src="https://www.themoviedb.org/t/p/w780/{{product.poster}}"
+      alt=""
+    />
+    <div class="prod-detail">
+      <div class="prod-title" title="{{product.created_date | getFullTime or ''}}">
+        <a href="" >{{product.director or ''}}</a> | {{product.original_name or ''}} ({{product.created_date | getYear or ''}})
+      </div>
+      <div class="prod-name">{{product.title or ''}}</div>
+      <div class="prod-wrapper">
+        <ul>
+          <li>
+            <i class="bx bx-star"></i>
+            <i class="bx bx-star"></i>
+            <i class="bx bx-star"></i>
+            <i class="bx bx-star"></i>
+            <i class="bx bx-star"></i>
+          </li>
+          <!-- <li>
+            <i class="bx bx-star"></i> Oyla
+          </li> -->
+          <li onclick="openPopup('popup-container-detail')">
+            <i class="bx bxs-detail"></i> Detayları Gör
+          </li>
+          <li data-id="{{product.id}}" data-type="{{type}}" id="addWatchList"><i class="bx bxs-bookmark"></i> İzleneceklere Ekle</li>
+          <li data-id="{{product.id}}" data-type="{{type}}" data-user="{{session['user_id']}}" id="addList" ><i class="bx bx-list-plus"></i> Listene Ekle</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body_head %} {% block container %}
+  <div class="cont-bottom">
+        <div class="cont-left-side">
+          <div class="left-side-fixed relative">          
+            <div class="left-header">{{product.title}} İçeren Listeler</div>
+            {% if product.get_list() %}
+            {% for list in product.get_list() %}
+            <div class="list-inner">
+              <a href="/list/{{list.slug}}" style="background: linear-gradient(
+                90deg,
+                rgba(40,40,40, 0.9) 11.86%,
+                rgba(40,40,40, 0.4) 77.55%
+              ),
+              url('{{list.list_pic}}')
+                no-repeat center center / cover;">
+                <h4>{{list.name}}</h4>
+                <h6><span class="fullname">{{list.get_user().fullname}}</span> · {{list.created_date|timeAgo }} </h6>
+              </a>            
+            </div>
+            {% endfor %} 
+            {% else %}
+            <div class="list-inner">
+              <a href="javascript:;" style="background: linear-gradient(
+                90deg,
+                rgba(40,40,40, 0.9) 11.86%,
+                rgba(40,40,40, 0.4) 77.55%
+              ),
+              url('')
+                no-repeat center center / cover;">
+                <h4>Herhangi bir liste bulunmuyor!</h4>
+              </a>            
+            </div>        
+            {% endif %}
+
+  
+            <div class="list-inner">
+              <a href="javascript:;" onclick="openPopup('popup-container-list')" style="background: linear-gradient(
+                90deg,
+                rgba(40,40,40, 0.9) 11.86%,
+                rgba(40,40,40, 0.4) 77.55%
+              )">
+                <h4><i class='bx bx-list-plus'></i>Yeni Liste Oluştur</h4>
+              </a>            
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+        <div class="cont-right-side">
+          {% block notion %}
+                    <div class="right-header"><h1>Görüşler</h1></div>
+          {% if notions %}
+          {% for notion in notions %}
+          <div class="notion-inner">          
+            <div class="text-content"><i
+                class="bx bxs-quote-alt-left bx-sm"
+                style="margin-right: 4px"
+              ></i>{{notion.html_out | safe}}</div>
+            <div class="text-bottom">
+              <span></span>
+              <div class="--user">
+                <a href="/@{{notion.get_user().username}}">{{notion.get_user().fullname}}</a> <span>  · {{notion.created_date | timeAgo}}</span>
+              </div>
+              <span></span>
+              <i class="bx bx-dots-horizontal-rounded"></i>
+              <div class="wrapper list-drop-notion hidden">
+                <ul class="list-dropdown list-style-none">
+                  <li>
+                    <a
+                      href="javascript:;"
+                      class="bookmarks"
+                      data-id="1"
+                      data-type="movie"
+                    >
+                      <i class='bx bxs-bolt' ></i>
+                      Görüşü Değerlendir
+                    </a>
+                  </li>
+                  <li>
+                    <a href=""><i class="bx bx-link-external"></i>Görüşe Git </a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a
+                      href="http://twitter.com/share?text=Im Sharing on Twitter&url=https://stackoverflow.com/users/2943186/youssef-subehi&hashtags=stackoverflow,example,youssefusf" target="_blank">
+                      <i class="bx bxl-twitter"></i>
+                      Twitter'da Paylaş
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank">
+                      <i class='bx bxl-facebook-circle' ></i></i>Facebook'da Paylaş</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          
+          {% else %}
+          <div class="notion-inner">          
+            <div class="text-content"><i
+                class="bx bxs-quote-alt-left bx-sm"
+                style="margin-right: 4px"
+              ></i>Bu içerik hakkında ilk görüşü sen belirt.</div>
+            <div class="text-bottom">
+              <span></span>
+              <div class="--user">
+                <a href="/@nurullah">Nurullah</a> <span>  · geçmiş zamanlardan</span>
+              </div>
+              <span></span>
+              <i class="bx bx-dots-horizontal-rounded"></i>
+              <div class="wrapper list-drop-notion hidden">
+                <ul class="list-dropdown list-style-none">
+                  <li>
+                    <a
+                      href="javascript:;"
+                      class="bookmarks"
+                      data-id="1"
+                      data-type="movie"
+                    >
+                      <i class='bx bxs-bolt' ></i>
+                      Görüşü Değerlendir
+                    </a>
+                  </li>
+                  <li>
+                    <a href=""><i class="bx bx-link-external"></i>Görüşe Git </a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a
+                      href="http://twitter.com/share?text=Im Sharing on Twitter&url=https://stackoverflow.com/users/2943186/youssef-subehi&hashtags=stackoverflow,example,youssefusf" target="_blank">
+                      <i class="bx bxl-twitter"></i>
+                      Twitter'da Paylaş
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank">
+                      <i class='bx bxl-facebook-circle' ></i></i>Facebook'da Paylaş</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="notion-area">
+            <div class="notion-content">
+              <div class="notion-text-inner">
+                <div class="notion-actions">
+                  <!-- <a href="javascript:;" id="linkBar"><i class='bx bx-link'></i><span>Link Ekle</span></a> -->
+                  <a href="javascript:;"  id="spoilerBar"><i class='bx bxs-error-circle' ></i><span>Spoiler</span></a>
+                </div>
+                <form class="notion-textarea" id="notionForm">
+                  <textarea name="" id="notionTextarea" spellcheck="false" required></textarea>
+                  <button type="submit"><i class='bx bxs-paper-plane'></i></button>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+          {% endblock notion %}
+
+      </div>
+
+ {% endblock container %} {% block
+popup %}
+<div class="popup-container" id="popup-container-detail">
+      <div class="popup">
+        <div class="popup-inner">
+          <div class="popup-header">
+            <h1>Detaylar</h1>
+            <i class="bx bx-x"></i>
+          </div>
+          <div class="content">
+            <div
+              class="backdrop-image-list"
+              style="
+                 background:
+          url('https://www.themoviedb.org/t/p/w780/{{product.backdrop}}')
+            no-repeat center center / cover;
+              "
+            ></div>
+            <div class="main">
+              <h1>{{product.title}}  <span style="font-size:25px;">({{product.created_date | getYear}})</span></h1>
+              <p class="text-box">{{product.overview}}</p>
+            </div>          
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<div class="popup-container" id="popup-container-user-list">
+    <div class="popup">
+      <div class="popup-inner">
+        <div class="popup-header">
+          <h1>Listelerin</h1>
+          <i class="bx bx-x"></i>
+        </div>
+        <div class="content" id="listContent">        
+        </div>
+      </div>
+    </div>
+</div>
+
+ <div class="popup-container" id="popup-container-list">
+      <div class="popup">
+        <div class="popup-inner">
+          <div class="popup-header">
+            <h1>Yeni Liste Oluştur</h1>
+            <i class="bx bx-x"></i>
+          </div>
+          <div class="content">
+            <div class="backdrop-image-list" style="background: url(/static/images/list-sml.jpg) 
+            no-repeat top center / cover;"></div>
+            <form action="/web/create-list" method="POST" id="createListForm">
+              <label for="name">Adı</label>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input
+                type="text"
+                id="name"
+                name="listName"
+                placeholder="Heisenberg'ın meth işine girmeden izlediği filmler"
+                autocomplete="off"
+                required
+              />
+              <label for="desc">Açıklama</label>
+              <input
+                type="text"
+                id="desc"
+                name="desc"
+                placeholder="Listene bir açıklama ekle"
+                autocomplete="off"
+                required
+              />
+              <button type="submit">OLUŞTUR</button>
+            </form>            
+          </div>
+        </div>
+      </div>
+    </div>
+ {% endblock popup %} {% block script %}
+ <script>
+ const productId = "{{product.id}}"
+ const productType = "{{type}}"
+ </script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{url_for('static', filename='script/addlist.js')}}"></script>
+<script src="{{url_for('static', filename='script/list_actions.js')}}"></script>
+<script src="{{url_for('static', filename='script/notions.js')}}"></script>
+{% endblock script %}

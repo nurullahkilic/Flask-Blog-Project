@@ -1,0 +1,129 @@
+{% extends "layout.html" %} {% block title %}Kontrol Paneli{% endblock title %}
+{% block container %}
+<div class="articles-dashbord" lang="tr-TR">
+  <h1>Dashboard</h1>
+  <a href="/account" class="error">HESAP AYARLARI</a>
+  <a href="/addarticle" class="success">YENİ MAKALE EKLE</a>
+  {% if admin==1 %}
+  <a href="/admin" class="primary">MAKALE ONAY PANELİ</a>
+  {% else %} {% endif %} {% if articles %} {% for article in articles[::-1] %}
+  {% if article.confirm==1 %}
+  <div
+    class="inner-box"
+    style="
+  background: linear-gradient(to left, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0.9)),url({{article.image_source}});background-repeat: no-repeat;background-position: center;background-size: cover;border-right: 1.8px solid #81c14b;"
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>{{article.title}}</h2>
+        <h4>
+          {{ article.content[:450]}}...
+          <br />
+          <a href="/article/{{article.id}}" class="success"
+            >Makale Sayfasına Git</a
+          >
+          <br />
+          <a href="/update/{{article.id}}" class="primary">Makaleyi Düzenle</a>
+          <br />
+          <a href="/delete/{{article.id}}" class="danger">Makaleyi Sil</a>
+        </h4>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div
+    class="inner-box"
+    style="
+  background: linear-gradient(to left, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0.9)),url({{article.image_source}});background-repeat: no-repeat;background-position: center;background-size: cover;border-right: 1.8px solid orangered;"
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>{{article.title}}</h2>
+        <h4>
+          {{ article.content[:450]}}...
+          <br />
+          <a href="/article/{{article.id}}" class="success"
+            >Makale Sayfasına Git</a
+          >
+          <br />
+          <a href="/update/{{article.id}}" class="primary">Makaleyi Düzenle</a>
+          <br />
+          <a href="/delete/{{article.id}}" class="danger">Makaleyi Sil</a>
+        </h4>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endfor %} {% else %}
+  <div
+    class="inner-box"
+    style="
+      background: linear-gradient(
+        to left,
+        rgba(0, 0, 0, 0) 5%,
+        rgba(0, 0, 0, 0.9)
+      );
+    "
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>Herhangi bir makale bulunamadı</h2>
+        <h4>
+          Yeni bir makale oluşturmak için tıklayınız
+          <br />
+          <a href="/addarticle" class="success">Makale Ekle</a>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+</div>
+
+{% block script %}
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script> -->
+<script>
+  const boxs = document.getElementsByClassName("inner-box");
+  for (var i = 0; i < boxs.length; i++) {
+    boxs[i].addEventListener("click", function (e) {
+      if (this.children[0].children[1].children[1].style.display === "block") {
+        this.children[0].children[0].style.transform = "rotateZ(225deg)";
+        this.children[0].children[1].children[1].style.display = "none";
+      } else {
+        this.children[0].children[0].style.transform = "rotateZ(90deg)";
+        this.children[0].children[1].children[1].style.display = "block";
+      }
+    });
+  }
+
+  // TÜRKİYE BU ÖZELLİĞE HAZIR DEĞİL
+
+  // const colorThief = new ColorThief();
+  // const getColorFunc = function (src, callback) {
+  //   let color;
+  //   const poster = document.createElement("img");
+  //   poster.src = src;
+  //   poster.crossOrigin = "Anonymous";
+
+  //   poster.addEventListener("load", function () {
+  //     color = `${colorThief.getColor(poster)[0]},${
+  //       colorThief.getColor(poster)[1]
+  //     },${colorThief.getColor(poster)[2]}`;
+  //     callback(color);
+  //   });
+  // };
+
+  // for (let i = 0; boxs.length>i;i++){
+  //   url = boxs[i].style.backgroundImage.slice(boxs[i].style.backgroundImage.search("url")+5, boxs[i].style.backgroundImage.length-2)
+  //   getColorFunc(url,function(color){
+  //     boxs[i].style.borderLeft = `10px solid rgb(${color})`
+  //     boxs[i].style.background += `linear-gradient(to left, rgba(${color}, 0) 5%, rgba(${color}, 0.9))`
+  //     console.log(i)
+  //   })
+  // }
+</script>
+
+{% endblock script %} {% endblock %}

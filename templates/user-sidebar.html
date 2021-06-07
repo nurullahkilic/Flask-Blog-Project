@@ -1,0 +1,124 @@
+{% extends "user.html" %}
+{% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-style.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/loader.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-alldata.css') }}"
+/>
+{% endblock link %}
+{% block rightSide %}
+   
+       <div class="all-data">
+                <div class="go-back">
+                    <a href="/@{{user.username}}">
+                        <i class='bx bx-undo bx-tada-hover'></i>
+                        <h3>Profile Geri Dön</h3>
+                    </a>
+                </div>
+                <div class="content" id="listContent">
+                {% if query=="list" %}
+                {% if lists %}
+                {% for list in lists %}
+                 <div class="list-inner" >
+                        <a
+                        href="/list/{{list.slug}}"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('{{list.list_pic}}') no-repeat top center / cover;
+                        "
+                        >
+                        <h4>{{list.name}}</h4>
+                        <h6><span class="fullname">{{list.get_user().fullname}}</span> · {{list.created_date | timeAgo}}</h6>
+                        </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="list-inner" >
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('') no-repeat center center / cover;
+                        "
+                        >
+                        <h4>Herhangi bir liste bulunmuyor.</h4>
+                        <h6><span class="fullname">{{user.fullname}}</span> </h6>
+                        </a>
+                </div>
+                {% endif %}
+
+                
+                {% else %}
+
+                {% if notions %}
+                {% for notion in notions %}
+                    <div class="list-inner" data-id="3">
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('https://www.themoviedb.org/t/p/w780/{{notion.get_product().backdrop}}') no-repeat center center / cover;
+                        "
+                        >
+                        <h5>
+                          {% if notion.text_out|length>125 %}
+                          {{notion.text_out[:125]}}...
+                          {% else %}
+                          {{notion.text_out}}
+                          {% endif %}   
+                        </h5>
+                        <h6><span class="fullname">{{notion.get_product().title}}</span> · {{notion.created_date | timeAgo}}</h6>
+                        </a>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="list-inner">
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('') no-repeat center center / cover;
+                        "
+                        >
+                        <h5>
+                          Görüş Bulunmuyor.
+                        </h5>
+                        <h6><span class="fullname">{{user.fullname}}</span></h6>
+                        </a>
+                    </div>
+                {% endif %}
+
+
+                {% endif %}
+                    
+                </div>
+            </div>
+    </div>
+
+{% endblock rightSide %}

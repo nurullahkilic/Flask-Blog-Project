@@ -1,0 +1,96 @@
+{% extends "layout.html" %} {% block title %} Yönetici Paneli {% endblock title
+%} {% block container %}
+<div class="articles-dashbord">
+  <h1>Yönetici Paneli</h1>
+  <a href="/dashboard" class="error">MAKALELERİNE DÖN</a>
+  {% if articles %} {% for article in articles[::-1] %} {% if article.confirm==1
+  %}
+  <div
+    class="inner-box"
+    style="
+  background: linear-gradient(to left, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0.9)),url({{article.image_source}});background-repeat: no-repeat;background-position: center;background-size: cover; border-left: 10px solid #81c14b;"
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>{{article.title}}</h2>
+        <h4>
+          {{ article.content[:450]}}...
+          <br />
+          <a href="/article/{{article.id}}" class="primary">Makaleyi İncele</a>
+          <br />
+          <a href="/reject/{{article.id}}" class="danger"
+            >Makale Onayını Kaldır</a
+          >
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <div
+    class="inner-box"
+    style="
+  background: linear-gradient(to left, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0.9)),url({{article.image_source}});background-repeat: no-repeat;background-position: center;background-size: cover; border-left: 10px solid orangered;"
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>{{article.title}}</h2>
+        <h4>
+          {{ article.content[:450]}}...
+          <br />
+          <a href="/article/{{article.id}}" class="primary">Makaleyi İncele</a>
+          <br />
+          <a href="/confirm/{{article.id}}" class="success">Makaleyi Onayla</a>
+          <br />
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  {% endif %} {% endfor %} {% else %}
+  <div
+    class="inner-box"
+    style="
+      background: linear-gradient(
+        to left,
+        rgba(0, 0, 0, 0) 5%,
+        rgba(0, 0, 0, 0.9)
+      );
+    "
+  >
+    <div class="inner-content">
+      <img src="{{ url_for('static', filename='icons/plus.svg') }}" />
+      <div class="inner-text">
+        <h2>Herhangi bir makale bulunamadı</h2>
+        <h4>
+          Yeni bir makale oluşturmak için tıklayınız
+          <br />
+          <a href="/addarticle" class="success">Makale Ekle</a>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  {% endif %}
+</div>
+
+{% block script %}
+
+<script>
+  const boxs = document.getElementsByClassName("inner-box");
+  for (var i = 0; i < boxs.length; i++) {
+    boxs[i].addEventListener("click", function (e) {
+      if (this.children[0].children[1].children[1].style.display === "block") {
+        this.children[0].children[0].style.transform = "rotateZ(225deg)";
+        this.children[0].children[1].children[1].style.display = "none";
+      } else {
+        this.children[0].children[0].style.transform = "rotateZ(90deg)";
+        this.children[0].children[1].children[1].style.display = "block";
+      }
+    });
+  }
+</script>
+
+{% endblock script %} {% endblock %}

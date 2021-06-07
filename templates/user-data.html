@@ -1,0 +1,434 @@
+{% extends "layout.html" %} {% block title %} {{user.fullname}} {% endblock
+title %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-style.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/loader.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-alldata.css') }}"
+/>
+{% endblock link %} {% block container %}
+<div
+  class="user-panel"
+  style="
+      background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 10%,
+          rgba(0, 0, 0, 0.73) 60%
+        ),
+        url( {{ url_for('static',filename='images/banner.jpg')}} ) no-repeat center center / cover;
+    "
+>
+  <div class="user-values">
+    <img
+      src="{{ user.profile_pic }}"
+      class="user-profile-image"
+      draggable="false"
+      onclick="openPopup('popup-container-image')"
+    />
+    <div
+      class="
+        user-name
+        bone bone-type-heading bone-style-subheading
+        width-quarter
+      "
+    >
+      <h2>
+        {{ user.fullname }} {% if user.is_verified %}
+        <i class="bx bxs-badge-check"></i>
+        {% else %} {% endif %}
+      </h2>
+      <h5>@{{ user.username }}</h5>
+    </div>
+    <div class="bio-content">
+      <div
+        class="bio-info"
+        title="Design and development agency that promotes innovation through
+            elevated websites, applications, and eCommerce solutions."
+      >
+        <!-- ya da classı hidden -->
+        Design and development agency that promotes innovation through elevated
+        websites, applications, and eCommerce solutions.
+      </div>
+      <div class="follow-counter">
+        <a href="javascript:;"><span class="follow">3</span> Makale</a> |
+        <a
+          href="javascript:;"
+          id="following"
+          data-id="{{user.id}}"
+          data-query="following"
+          class="followPopups"
+        >
+          <span class="follower">{{user.following}}</span> Takip edilen</a
+        >
+        |
+        <a
+          href="javascript:;"
+          id="follower"
+          data-id="{{user.id}}"
+          data-query="follower"
+          class="followPopups"
+        >
+          <span class="follower">{{user.followers}}</span> Takipçi
+        </a>
+      </div>
+    </div>
+  </div>
+  {% if session["logged_in"] %}
+  <div class="buttons">
+    {% if session["user_id"] == user.id %}
+    <a href="/account" class="btn-primary">Profili düzenle</a>
+    {% else %}
+    <!-- <a href="" class="btn-danger">Engelle</a> -->
+    {% if follow.is_following(user.id, session["user_id"]) %}
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-danger"
+      id="followBtn"
+      ><i class="bx bxs-user-minus"></i> Takibi Bırak</a
+    >
+    {% else %}
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-success"
+      id="followBtn"
+      ><i class="bx bxs-user-plus"></i> Takip Et</a
+    >
+    {% endif %} {% endif %}
+  </div>
+  {% else %}
+  <div class="buttons">
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-success"
+      id="followBtn"
+      >Takip Et</a
+    >
+  </div>
+  {% endif %}
+</div>
+<div class="user-bottom-panel">
+  <div class="bottom-left-side">
+    <div class="left-side-fixed relative">
+      <div class="favlist-inner" id="favlistInner">
+        <div class="favlist-header">
+          <h1>Favori Listeler</h1>
+          <a href="/@{{user.username}}?query=list"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+        <ul>
+          {% if lists %} {% for list in lists[0:3] %}
+          <li>
+            <a
+              href="/list/{{ list.slug }}"
+              style="
+                  background: linear-gradient(
+                      90deg,
+                      #181818 5.46%,
+                      rgba(24, 24, 24, 0.35) 100%
+                    ),
+                    url( '{{ list.list_pic }}' ) no-repeat top center / cover;
+                "
+            >
+              <span class="corner-stick"></span>
+              <h2>{{ list.name }}</h2>
+              <h4>
+                <span class="user-fullname">{{ list.get_user().fullname}}</span>
+                · {{ list.created_date | timeAgo }}
+              </h4></a
+            >
+          </li>
+          {% endfor %} {% else %}
+          <li class="empty-list">
+            <a href="javascript:;" id="noList">
+              <span class="corner-stick"></span>
+              <h2>herhangi bir liste bulunmuyor</h2>
+            </a>
+          </li>
+          {% endif %}
+
+          <li>
+            <div onclick="openPopup('popup-container-list')" id="new-list-bar">
+              <i class="bx bx-list-plus"></i>
+              <span>Yeni Liste Oluştur</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="notion-inner">
+        <div class="notion-header">
+          <h1>Görüşler</h1>
+          <a href="/@{{user.username}}?query=notion"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+            <ul>
+          {% if notions %} {% for notion in notions[0:3] %}
+          <li>
+            <a
+              href=""
+              style="
+                background: linear-gradient(
+                    90deg,
+                    #181818 5.46%,
+                    rgba(24, 24, 24, 0.35) 100%
+                  ),
+                  url('https://www.themoviedb.org/t/p/w780/{{notion.get_product().backdrop}}');
+                background-position: 20%;
+                background-size: cover;
+              "
+            >
+              <span class="corner-stick"></span>
+              <h2>
+              {% if notion.text_out|length>125 %}
+              {{notion.text_out[:125]}}...
+              {% else %}
+              {{notion.text_out}}
+              {% endif %}                
+              </h2>
+              <h4>
+                <span class="name">{{notion.get_product().title}}</span>
+              </h4></a
+            >
+          </li>
+          {% endfor %} {% else %}
+         <li class="empty-list-notion">
+                <a href="javascript:;">
+                  <span class="corner-stick"></span>
+                  <h2>herhangi bir görüş bulunmuyor</h2>
+                </a>
+         </li>
+          {% endif %}    
+          <li>
+            <div>
+              <i class="bx bx-list-plus"></i>
+              <span>Yeni Görüş Belirt</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-right-side">
+   
+       <div class="all-data">
+                <div class="go-back">
+                    <a href="/@{{user.username}}">
+                        <i class='bx bx-undo bx-tada-hover'></i>
+                        <h3>Profile Geri Dön</h3>
+                    </a>
+                </div>
+                <div class="content" id="listContent">
+                {% if query=="list" %}
+                {% if lists %}
+                {% for list in lists %}
+                 <div class="list-inner" >
+                        <a
+                        href="/list/{{list.slug}}"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('{{list.list_pic}}') no-repeat top center / cover;
+                        "
+                        >
+                        <h4>{{list.name}}</h4>
+                        <h6><span class="fullname">{{list.get_user().fullname}}</span> · {{list.created_date | timeAgo}}</h6>
+                        </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="list-inner" >
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('') no-repeat center center / cover;
+                        "
+                        >
+                        <h4>Herhangi bir liste bulunmuyor</h4>
+                        <h6><span class="fullname">{{user.fullname}}</span> </h6>
+                        </a>
+                </div>
+                {% endif %}
+
+                
+                {% else %}
+
+                {% if notions %}
+                {% for notion in notions %}
+                    <div class="list-inner" data-id="3">
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('https://www.themoviedb.org/t/p/w780/{{notion.get_product().backdrop}}') no-repeat center center / cover;
+                        "
+                        >
+                        <h5>
+                          {% if notion.text_out|length>125 %}
+                          {{notion.text_out[:125]}}...
+                          {% else %}
+                          {{notion.text_out}}
+                          {% endif %}   
+                        </h5>
+                        <h6><span class="fullname">{{notion.get_product().title}}</span> · {{notion.created_date | timeAgo}}</h6>
+                        </a>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <div class="list-inner">
+                        <a
+                        href="javascript:;"
+                        style="
+                            background: linear-gradient(
+                                90deg,
+                                rgba(40, 40, 40, 0.9) 11.86%,
+                                rgba(40, 40, 40, 0.4) 77.55%
+                            ),
+                            url('') no-repeat center center / cover;
+                        "
+                        >
+                        <h5>
+                          Görüş Bulunmuyor.
+                        </h5>
+                        <h6><span class="fullname">Nurullah Kılıç</span></h6>
+                        </a>
+                    </div>
+                {% endif %}
+
+
+                {% endif %}
+                   
+            
+                   
+
+
+ 
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+<div class="popup-container" id="popup-container-list">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>Yeni Liste Oluştur</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url(/static/images/list-sml.jpg) no-repeat top center /
+              cover;
+          "
+        ></div>
+        <!-- <form
+              action="/upload_image?query=list"
+              method="POST" id="imageUploader" enctype=multipart/form-data>
+              <label for="list-img">Liste Görseli</label>
+              <input type="file" name="image_file" accept="image/*" required/>
+            </form> -->
+        <form action="/web/create-list" method="POST" id="createListForm">
+          <label for="name">Adı</label>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input
+            type="text"
+            id="name"
+            name="listName"
+            placeholder="Heisenberg'ın meth işine girmeden izlediği filmler"
+            autocomplete="off"
+            required
+          />
+          <label for="desc">Açıklama</label>
+          <input
+            type="text"
+            id="desc"
+            name="desc"
+            placeholder="Listene bir açıklama ekle"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">OLUŞTUR</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="popup-container" id="popup-container-image">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>{{ user.fullname }}</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url('{{ user.profile_pic }}') no-repeat center center / cover;
+          "
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="popup-container" id="popup-container-follow">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>Takip Edilen</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url('https://www.themoviedb.org/t/p/original/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg')
+              no-repeat center center / cover;
+          "
+        ></div>
+        <div class="follow-container"></div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock container %} {% block script %}
+  <script>
+    const session_username = '{{session['username']|safe}}';
+    const session_userid = '{{session['user_id']|safe}}';
+  </script>
+  <script src="{{url_for('static', filename='script/user.js')}}"></script>
+  {% endblock script %}
+</div>

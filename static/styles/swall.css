@@ -1,0 +1,167 @@
+.swal2-container {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+
+.swal2-popup {
+  display: none;
+  position: relative;
+  box-sizing: border-box;
+  width: 32em;
+  max-width: 100%;
+  padding: 0 0 1.25em;
+  border: none;
+  border-radius: 10px;
+  background: #282828 !important;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.swal2-title {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px !important;
+  color: #ffffff !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.33);
+}
+
+.swal2-html-container {
+  padding: 0 !important;
+}
+
+/*FOLLOW*/
+
+.follow-container {
+  text-align: left !important;
+  margin-top: -40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.follow-container .follow-content {
+  padding: 0px 25px;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 60px;
+  height: 100%;
+  border-bottom: 1px solid #595959;
+}
+.follow-container .follow-content:last-child {
+  border-bottom: none;
+}
+
+.follow-container .follow-content > .follow-left-side {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  -webkit-box-flex: 5; /* iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 5; /* Firefox 19- */
+  -webkit-flex: 5; /* Chrome */
+  -ms-flex: 5; /* IE 10 */
+  flex: 5;
+}
+
+.follow-container .follow-content > .follow-left-side > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.follow-container .follow-content > .follow-left-side > a > img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 43px;
+  width: 43px;
+  border-radius: 15px;
+  object-fit: cover;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.follow-container .follow-content > .follow-left-side > .follow-user {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.follow-container .follow-content > .follow-left-side > .follow-user h5 {
+  color: #81c14b;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.follow-container .follow-content > .follow-right-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-box-flex: 3; /* iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 3; /* Firefox 19- */
+  -webkit-flex: 3; /* Chrome */
+  -ms-flex: 3; /* IE 10 */
+  flex: 3;
+}
+.follow-container .follow-content > .follow-right-side > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  max-width: 120px;
+  width: 100%;
+  height: 30px;
+  background: rgba(129, 193, 75, 0.4);
+  border: 0.5px solid #81c14b;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  color: #ffffff;
+  transition: 100ms all;
+}
+
+.follow-container .follow-content > .follow-right-side > a.btn-primary {
+  background: rgba(0, 123, 255, 0.5);
+  border: 0.5px solid #007bff;
+}
+
+.follow-container .follow-content > .follow-right-side > a.btn-primary:hover {
+  border: 2px solid #007bff;
+  background: rgba(0, 123, 255, 0.6);
+}
+
+.follow-container .follow-content > .follow-right-side > a.btn-danger {
+  background: rgba(255, 69, 0, 0.5);
+  border: 0.5px solid #ff4500;
+}
+
+.follow-container .follow-content > .follow-right-side > a.btn-danger:hover {
+  border: 2px solid #ff4500;
+  background: rgba(255, 69, 0, 0.6);
+}
+.follow-container .follow-content > .follow-right-side > a.btn-success {
+  background: rgba(129, 193, 75, 0.5);
+  border: 0.5px solid #81c14b;
+}
+.follow-container .follow-content > .follow-right-side > a.btn-success:hover {
+  background: rgba(129, 193, 75, 0.6);
+  border: 2px solid #81c14b;
+}

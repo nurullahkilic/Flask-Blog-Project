@@ -1,0 +1,15 @@
+{% extends "layout.html" %} {% block container %} {% from
+"includes/formhelpers.html" import render_field %}
+<div class="login-content">
+  <div class="login-menu">
+    <h2>Bir Kullanıcı Adı Seçiniz</h2>
+    <form method="POST">
+      <label for="username">User Name</label>
+      {{ render_field(form.username,placeholder="Enter username",autocomplete="off") }}
+      <button type="submit">Kaydet</button>
+    </form>
+  </div>
+  <blockquote>Do have an account? <a href="/login">Log in</a></blockquote>
+</div>
+
+{% endblock container %}

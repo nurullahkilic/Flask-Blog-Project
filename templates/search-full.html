@@ -1,0 +1,208 @@
+{% extends "layout.html" %} {% block title %} Makaleler {% endblock title %} {%
+block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/product-table.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/search_page.css') }}"
+/>
+{% endblock link %}
+{% block container %}
+<div class="search-page-content">
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="Yazar, yazı veya eser"
+      class="search-page-input"
+      autofocus
+    />
+    <div class="dropdown-search">
+      <i class="bx bxs-chevron-down dropbtn-search"></i>
+      <div id="myDropdown-search" class="dropdown-content">
+        <a href="#articles"><i class="bx bx-library"></i>Makaleler</a>
+        <a href="#articles"><i class="bx bxs-user-account"></i>Kullanıcılar</a>
+        <a href="#users"><i class="bx bxs-camera-movie"></i>Film</a>
+        <a href="#contact"><i class="bx bxs-movie-play"></i>Dizi</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-result-inner">
+    <div class="result-content">
+    {% if search_type=="articles" %}
+      <div class="search-page-titles" id="articles">
+        <h1>Favori Makaleler</h1>
+        <a href="/"><h3>HEPSİNİ GÖR</h3></a>
+      </div>
+      <div class="search-articles">
+        {% if articles %} {% for article in articles %}
+        <div
+          class="search-articles-inner"
+          style="
+            background: linear-gradient(
+                270deg,
+                rgba({{article.thumbnail_color or '29, 29, 29'}}, 0.2) 10%,
+                rgba({{article.thumbnail_color or '29, 29, 29'}}, 0.62) 60%
+              ),
+              url('{{article.thumbnail}}');
+            background-position: 20%;
+            background-size: cover;
+            background-blend-mode: multiply;
+          "
+        >
+          <div class="articles-info">
+            <h4>
+              <a href="/@{{article.get_user().username}}" class="user-fullname"
+                >{{article.get_user().fullname}}</a
+              >
+              · {{article.created_date | timeAgo}}
+            </h4>
+            <a
+              href="/article/{{article.slugify}}"
+              class="href-title"
+              title="{{article.title}}"
+              ><h1>
+                {% if article.title|length>45 %} {{article.title[:45]}}... {%
+                else %} {{article.title}} {% endif %}
+              </h1></a
+            >
+          </div>
+          <div class="article-actions">
+            <div>
+              <a href="/article/{{article.slugify}}#comment"
+                ><img src="/static/icons/comment.svg" alt=""
+              /></a>
+              <span>{{article.count_comment()}}</span>
+            </div>
+            <div>
+              <a href=""><img src="/static/icons/like.svg" alt="" /></a>
+              <span>{{article.count_like()}}</span>
+            </div>
+          </div>
+
+        </div>
+
+        {% endfor %} {% else %} {% endif %}
+      </div>
+    
+    {% elif %}
+    {% else %}
+    {% endif %}
+    </div>
+
+    <div class="result-content">
+      <div class="search-page-titles" id="users">
+        <h1>Kullanıcılar</h1>
+        <a href="/"><h3>HEPSİNİ GÖR</h3></a>
+      </div>
+      <div class="search-users">
+        {% for user in users %}
+        <div
+          class="search-users-inner"
+          style="
+            background: linear-gradient(
+                90deg,
+                rgba(0, 0, 0, 0.2) 10%,
+                rgba(0, 0, 0, 0.8) 60%
+              ),
+              url('');
+            background-position: 20%;
+            background-size: cover;
+            background-blend-mode: multiply;
+          "
+        >
+          <img src="{{user.profile_pic}}" alt="" />
+          <div>
+            <div class="user-name">
+              <a href="/@{{user.username}}"><h2>{{user.fullname}}</h2></a>
+              <h5>@{{user.username}}</h5>
+            </div>
+            <a href="" class="btn-success">Takip Et</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      </div>
+      <div class="result-content">
+        <div class="search-page-titles" id="users">
+          <h1>Favori Filmler</h1>
+          <a href="/"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+        <div class="search-posters table-items search-movies-inner">
+          {% for item in movies %}
+          <div
+            class="table-inner"
+            style="
+        background: linear-gradient(
+            360deg,
+            rgba(24, 24, 24, 0.95) 0%,
+            rgba(0, 0, 0, 0) 80.77%
+          ),
+          url('https://www.themoviedb.org/t/p/w780{{item.backdrop}}')
+            no-repeat center center / cover;
+        background-blend-mode: multiply;
+      "
+          >
+            <div class="table-text">
+              <div class="text-top">
+                <span class="stick"></span>
+                <h4>
+                  {{item.director or ""}} ({{item.created_date | getYear or
+                  ""}})
+                </h4>
+              </div>
+              <h2>{{item.title or item.original_name}}</h2>
+            </div>
+            <a href="/movies/{{item.id}}"></a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="result-content">
+      
+        <div class="search-page-titles" id="users">
+          <h1>Favori Diziler</h1>
+          <a href="/"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+        <div class="search-posters table-items search-series-inner">
+          {% for item in series %}
+          <div
+            class="table-inner"
+            style="
+        background: linear-gradient(
+            360deg,
+            rgba(24, 24, 24, 0.95) 0%,
+            rgba(0, 0, 0, 0) 80.77%
+          ),
+          url('https://www.themoviedb.org/t/p/w780{{item.backdrop}}')
+            no-repeat center center / cover;
+        background-blend-mode: multiply;
+      "
+          >
+            <div class="table-text">
+              <div class="text-top">
+                <span class="stick"></span>
+                <h4>
+                  {{item.director or ""}} ({{item.created_date | getYear or
+                  ""}})
+                </h4>
+              </div>
+              <h2>{{item.title or item.original_name}}</h2>
+            </div>
+            <a href="/series/{{item.id}}"></a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  {% endblock container %} {% block script %}
+  <script src="{{url_for('static', filename='script/search_page.js')}}"></script>
+  {% endblock script %}
+</div>

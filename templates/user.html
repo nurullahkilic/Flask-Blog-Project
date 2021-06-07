@@ -1,0 +1,566 @@
+{% extends "layout.html" %} {% block title %} {{user.fullname}} {% endblock
+title %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/profile-style.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/loader.css') }}"
+/>
+{% endblock link %} {% block container %}
+<div
+  class="user-panel"
+  style="
+      background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 10%,
+          rgba(0, 0, 0, 0.73) 60%
+        ),
+        url( {{ url_for('static',filename='images/banner.jpg')}} ) no-repeat center center / cover;
+    "
+>
+  <div class="user-values">
+    <img
+      src="{{ user.profile_pic }}"
+      class="user-profile-image"
+      draggable="false"
+      onclick="openPopup('popup-container-image')"
+    />
+    <div
+      class="
+        user-name
+        bone bone-type-heading bone-style-subheading
+        width-quarter
+      "
+    >
+      <h2>
+        {{ user.fullname }} {% if user.is_verified %}
+        <i class="bx bxs-badge-check"></i>
+        {% else %} {% endif %}
+      </h2>
+      <h5>@{{ user.username }}</h5>
+    </div>
+    <div class="bio-content">
+      <div
+        class="bio-info"
+        title="Design and development agency that promotes innovation through
+            elevated websites, applications, and eCommerce solutions."
+      >
+        <!-- ya da classı hidden -->
+        Design and development agency that promotes innovation through elevated
+        websites, applications, and eCommerce solutions.
+      </div>
+      <div class="follow-counter">
+        <a href="#articlesSide"><span class="follow">{{user.count_publish_article()}}</span> Makale</a> |
+        <a
+          href="javascript:;"
+          id="following"
+          data-id="{{user.id}}"
+          data-query="following"
+          class="followPopups"
+        >
+          <span class="follower">{{user.following}}</span> Takip edilen</a
+        >
+        |
+        <a
+          href="javascript:;"
+          id="follower"
+          data-id="{{user.id}}"
+          data-query="follower"
+          class="followPopups"
+        >
+          <span class="follower">{{user.followers}}</span> Takipçi
+        </a>
+      </div>
+    </div>
+  </div>
+  {% if session["logged_in"] %}
+  <div class="buttons">
+  {% block buttons %}
+   {% if session["user_id"] == user.id %}
+    <a href="/account" class="btn-primary">Profili düzenle</a>
+    {% else %}
+    <!-- <a href="" class="btn-danger">Engelle</a> -->
+    {% if follow.is_following(user.id, session["user_id"]) %}
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-danger"
+      id="followBtn"
+      ><i class="bx bxs-user-minus"></i> Takibi Bırak</a
+    >
+    {% else %}
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-success"
+      id="followBtn"
+      ><i class="bx bxs-user-plus"></i> Takip Et</a
+    >
+    {% endif %} {% endif %}
+  {% endblock buttons %}   
+  </div>
+  {% else %}
+  <div class="buttons">
+    <a
+      href="javascript:;"
+      data-id="{{ user.id }}"
+      class="btn-success"
+      id="followBtn"
+      >Takip Et</a
+    >
+  </div>
+  {% endif %}
+</div>
+<div class="user-bottom-panel">
+  {% block bottomPanel %}
+   <div class="bottom-left-side">
+    <div class="left-side-fixed relative">
+      <div class="watchlist-inner">
+        <a href="/@{{user.username}}?query=watchlist">
+          <i class='bx bxs-bookmark-alt' ></i>
+          <h2>İZLENECEKLER</h2>
+        </a>        
+      </div>
+      <div class="favlist-inner" id="favlistInner">
+        <div class="favlist-header">
+          <h1>Favori Listeler</h1>
+          <a href="/@{{user.username}}?query=list"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+        <ul>
+          {% if lists %} {% for list in lists[0:3] %}
+          <li>
+            <a
+              href="/list/{{ list.slug }}"
+              style="
+                  background: linear-gradient(
+                      90deg,
+                      #181818 5.46%,
+                      rgba(24, 24, 24, 0.35) 100%
+                    ),
+                    url( '{{ list.list_pic }}' ) no-repeat top center / cover;
+                "
+            >
+              <span class="corner-stick"></span>
+              <h2>{{ list.name }}</h2>
+              <h4>
+                <span class="user-fullname">{{ list.get_user().fullname}}</span>
+                · {{ list.created_date | timeAgo }}
+              </h4></a
+            >
+          </li>
+          {% endfor %} {% else %}
+          <li class="empty-list">
+            <a href="javascript:;" id="noList">
+              <span class="corner-stick"></span>
+              <h2>Herhangi bir liste bulunmuyor.</h2>
+            </a>
+          </li>
+          {% endif %}
+
+          <li>
+            <div onclick="openPopup('popup-container-list')" id="new-list-bar">
+              <i class="bx bx-list-plus"></i>
+              <span>Yeni Liste Oluştur</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="notion-inner">
+        <div class="notion-header">
+          <h1>Görüşler</h1>
+          <a href="/@{{user.username}}?query=notion"><h3>HEPSİNİ GÖR</h3></a>
+        </div>
+        <ul>
+          {% if notions %} {% for notion in notions[0:3] %}
+          <li>
+            <a
+              href=""
+              style="
+                background: linear-gradient(
+                    90deg,
+                    #181818 5.46%,
+                    rgba(24, 24, 24, 0.35) 100%
+                  ),
+                  url('https://www.themoviedb.org/t/p/w780/{{notion.get_product().backdrop}}');
+                background-position: 20%;
+                background-size: cover;
+              "
+            >
+              <span class="corner-stick"></span>
+              <h2>
+                {{notion.text_out[:130]}}
+              </h2>
+              <h4>
+                <span class="name">{{notion.get_product().title}}</span>
+              </h4></a
+            >
+          </li>
+          {% endfor %} {% else %}
+         <li class="empty-list-notion">
+                <a href="javascript:;">
+                  <span class="corner-stick"></span>
+                  <h2>herhangi bir görüş bulunmuyor</h2>
+                </a>
+         </li>
+          {% endif %}    
+          <li>
+            <div>
+              <i class="bx bx-list-plus"></i>
+              <span>Yeni Görüş Belirt</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+
+    </div>
+  </div>
+
+  <div class="bottom-right-side" id="articlesSide">
+  {% block rightSide %}
+    {% if articles %} {% for article in articles[::-1] %}
+    {% if not article.is_publish %}
+    {% if article.author_id==session["user_id"] %}
+     <div class="post-inner">    
+      <div
+        class="post-background"
+        style="
+            background: url('{{article.thumbnail}}');
+            background-position: 20%;
+            background-size: cover;
+          "
+      >      
+        <div class="left-side-stick">
+          <img
+            src="{{ user.profile_pic }}"
+            class="user-icon"
+            draggable="false"
+            style="cursor:pointer;"
+            onclick="openPopup('popup-container-image')"
+          />
+          <span id="stick"></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="post-text-side">
+          <div class="articles-info">
+            <a href="/article/{{article.slugify}}" class="href-title"
+              ><h1><i>{{article.title}}</i></h1></a
+            >
+            <h4>
+              <span class="user-fullname">{{user.fullname}}</span> ·
+              {{article.created_date | timeAgo}}
+            </h4>
+          </div>
+          <div class="actions">
+            <div class="dropdown">
+              <img src="/static/icons/arrow-down.svg" alt="" class="dropbtn" />
+              <div id="myDropdown" class="dropdown-content">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+              </div>
+            </div>
+            <div>
+              <span>{{article.count_comment()}}</span>
+              <a href="/article/{{article.slugify}}#comment"><img src="/static/icons/comment.svg" alt="" /></a>
+            </div>
+            <div>
+              <span>172K</span>
+              <a href=""><img src="/static/icons/like.svg" alt="" /></a>
+            </div>
+            <div>
+              <span>1.4M</span>
+              <a href=""><img src="/static/icons/Shape.svg" alt="" /></a>
+            </div>
+          </div>
+        </div>        
+        <a href="/article/{{article.slugify}}"></a>
+      </div>      
+    </div>
+    {% else %}
+    {% if user.count_publish_article()==0 %}
+    
+      <div class="post-inner">        
+        <div
+          class="post-background"
+          style="
+            background: url('');
+            background-position: 20%;
+            background-size: cover;
+          "
+        >
+          <div class="left-side-stick">
+            <img
+              src="{{ user.profile_pic }}"
+              class="user-icon"
+              draggable="false"
+            />
+            <span id="stick"></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="post-text-side">
+            <div class="articles-info">
+              <a href="" class="href-title"
+                ><h1>Herhangi bir makale bulunmuyor!</h1></a
+              >
+              <h4>
+                <span class="user-fullname">{{user.fullname}}</span> · bayadır
+              </h4>
+            </div>
+            <div class="actions">
+              <div class="dropdown">
+                <img
+                  src="/static/icons/arrow-down.svg"
+                  alt=""
+                  class="dropbtn"
+                />
+                <div id="myDropdown" class="dropdown-content">
+                  <a href="#home">Home</a>
+                  <a href="#about">About</a>
+                  <a href="#contact">Contact</a>
+                </div>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/comment.svg" alt="" /></a>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/like.svg" alt="" /></a>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/Shape.svg" alt="" /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+    {% endif %}
+    {% endif %}    
+    {% else %}
+     <div class="post-inner">    
+      <div
+        class="post-background"
+        style="
+            background: url('{{article.thumbnail}}');
+            background-position: 20%;
+            background-size: cover;
+          "
+      >      
+        <div class="left-side-stick">
+          <img
+            src="{{ user.profile_pic }}"
+            class="user-icon"
+            draggable="false"
+            style="cursor:pointer;"
+            onclick="openPopup('popup-container-image')"
+          />
+          <span id="stick"></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="post-text-side">
+          <div class="articles-info">
+            <a href="/article/{{article.slugify}}" class="href-title"
+              ><h1>{{article.title}}</h1></a
+            >
+            <h4>
+              <span class="user-fullname">{{user.fullname}}</span> ·
+              {{article.created_date | timeAgo}}
+            </h4>
+          </div>
+          <div class="actions">
+            <div class="dropdown">
+              <img src="/static/icons/arrow-down.svg" alt="" class="dropbtn" />
+              <div id="myDropdown" class="dropdown-content">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+              </div>
+            </div>
+            <div>
+              <span>{{article.count_comment()}}</span>
+              <a href="/article/{{article.slugify}}#comment"><img src="/static/icons/comment.svg" alt="" /></a>
+            </div>
+            <div>
+              <span>{{article.count_like()}}</span>
+              <a href=""><img src="/static/icons/like.svg" alt="" /></a>
+            </div>
+            <div>
+              <span>1.4M</span>
+              <a href=""><img src="/static/icons/Shape.svg" alt="" /></a>
+            </div>
+          </div>
+        </div>        
+        <a href="/article/{{article.slugify}}"></a>
+      </div>      
+    </div>
+    {% endif %}   
+    {% endfor %} {% else %}
+
+      <div class="post-inner">        
+        <div
+          class="post-background"
+          style="
+            background: url('');
+            background-position: 20%;
+            background-size: cover;
+          "
+        >
+          <div class="left-side-stick">
+            <img
+              src="{{ user.profile_pic }}"
+              class="user-icon"
+              draggable="false"
+            />
+            <span id="stick"></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="post-text-side">
+            <div class="articles-info">
+              <a href="" class="href-title"
+                ><h1>Herhangi bir makale bulunmuyor!</h1></a
+              >
+              <h4>
+                <span class="user-fullname">{{user.fullname}}</span> · bayadır
+              </h4>
+            </div>
+            <div class="actions">
+              <div class="dropdown">
+                <img
+                  src="/static/icons/arrow-down.svg"
+                  alt=""
+                  class="dropbtn"
+                />
+                <div id="myDropdown" class="dropdown-content">
+                  <a href="#home">Home</a>
+                  <a href="#about">About</a>
+                  <a href="#contact">Contact</a>
+                </div>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/comment.svg" alt="" /></a>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/like.svg" alt="" /></a>
+              </div>
+              <div>
+                <span></span>
+                <a href=""><img src="/static/icons/Shape.svg" alt="" /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+  {% endblock rightSide %}  
+    </div>
+  </div>
+  {% endblock bottomPanel %}
+ 
+</div>
+<div class="popup-container" id="popup-container-list">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>Yeni Liste Oluştur</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url(/static/images/list-sml.jpg) no-repeat top center /
+              cover;
+          "
+        ></div>
+        <!-- <form
+              action="/upload_image?query=list"
+              method="POST" id="imageUploader" enctype=multipart/form-data>
+              <label for="list-img">Liste Görseli</label>
+              <input type="file" name="image_file" accept="image/*" required/>
+            </form> -->
+        <form action="/web/create-list" method="POST" id="createListForm">
+          <label for="name">Adı</label>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input
+            type="text"
+            id="name"
+            name="listName"
+            placeholder="Heisenberg'ın meth işine girmeden izlediği filmler"
+            autocomplete="off"
+            required
+          />
+          <label for="desc">Açıklama</label>
+          <input
+            type="text"
+            id="desc"
+            name="desc"
+            placeholder="Listene bir açıklama ekle"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">OLUŞTUR</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="popup-container" id="popup-container-image">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>{{ user.fullname }}</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url('{{ user.profile_pic }}') no-repeat center center / cover;
+          "
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="popup-container" id="popup-container-follow">
+  <div class="popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <h1>Takip Edilen</h1>
+        <i class="bx bx-x"></i>
+      </div>
+      <div class="content">
+        <div
+          class="backdrop-image-list"
+          style="
+            background: url('https://www.themoviedb.org/t/p/original/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg')
+              no-repeat center center / cover;
+          "
+        ></div>
+        <div class="follow-container"></div>
+      </div>
+    </div>
+  </div>
+
+  {% endblock container %} {% block script %}
+  <script>
+    const session_username = "{{session['username']|safe}}";
+    const session_userid = "{{session['user_id']|safe}}";
+  </script>
+  <script src="{{url_for('static', filename='script/user.js')}}"></script>
+  {% endblock script %}
+</div>

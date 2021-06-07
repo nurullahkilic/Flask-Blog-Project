@@ -1,0 +1,201 @@
+{% extends "layout.html" %} {% block title %} {{list.name}} {% endblock title %}
+{% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/list.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/list-dropdown.css') }}"
+/>
+{% endblock link %} {% block body_head %}
+<div class="hackdrop"></div>
+<div
+  class="backdrop-image"
+  style="
+    background: url({{list.list_pic}})
+      no-repeat top center / cover;
+  "
+>
+  <div class="info-text">
+    <div class="list-name">
+    {{list.name}}
+    <h6>{{list.desc}}</h6>
+    </div>
+    <div class="list-actions">
+      <div class="author-bar">
+        <img src="{{user.profile_pic}}" draggable="false" />
+        <h4>
+          <a href="/@{{user.username}}" class="user-fullname"
+            >{{user.fullname}}</a
+          >
+          · {{list.created_date | timeAgo}}
+        </h4>
+      </div>
+      <div class="icons">
+        <i class="bx bxs-bookmark-star"></i>
+        <i onclick="openPopup('popup-container-list')" class="bx bxs-image-add"></i>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body_head %} {% block container %}
+<table>
+  <thead>
+    <tr>
+      <th>Film</th>
+      <th>Yönetmeni</th>
+      <th>Tarihinde Eklendi</th>
+      <th>Yılı</th>
+    </tr>
+  </thead>
+  <tbody>
+{% if list.get_items() %}
+    {% for item in list.get_items() %}
+      <tr
+      style="
+        background: url('https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces{{item.item.backdrop}}')
+          no-repeat center center / cover;
+      "
+    >
+      <th class="title-table">
+        <a href="/{{item.type}}/{{item.item.id}}">
+          <span class="corner-stick"></span>
+          <h5 class="list-order"></h5>
+          <img
+            src="https://www.themoviedb.org/t/p/w154{{item.item.poster}}"
+            alt=""
+          />
+          <h5>{{item.item.title or item.item.original_name}}</h5>
+        </a>
+      </th>
+      <th class="director-table">
+        <a href="">
+          <h5>{{item.item.director or ""}}</h5>
+        </a>
+      </th>
+      <th class="country">
+        <a href="">
+          <h5>{{item.added_date | timeAgo}}</h5>
+        </a>
+      </th>
+      <th class="year">
+        <h4>{{item.item.created_date | getYear or ""}}</h4>
+        <i class="bx bx-dots-vertical-rounded"></i>
+        <div class="wrapper list-drop hidden">
+          <ul class="list-dropdown list-style-none">
+            <li>
+              <a
+                href="javascript:;"
+                data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                class="add-watchlist-drop"             
+              >
+                <i class="bx bxs-bookmark"></i>
+                İzleneceklere Ekle
+              </a>
+            </li>
+            <li>
+              <a href="/{{item.type}}/{{item.item.id}}"><i class="bx bx-link-external"></i>Esere Git </a>
+            </li>
+            <hr />
+            <li>
+              <a
+                href="javascript:;"
+                data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                data-user="{{session['user_id']}}"
+                class="add-list-drop"
+              >
+                <i class="bx bx-list-plus"></i>
+                Listene Ekle
+              </a>
+            </li>
+            {% if list.user_id==session['user_id'] and "logged_in" in session%}
+            <li>
+              <a  href="javascript:;"
+                data-id="{{item.item.id}}"
+                {% if item.type == "movies" %}
+                data-type="1"
+                {% else %}
+                data-type="2"
+                {% endif %}                
+                data-list="{{list.id}}"
+                class="remove-list-drop"> <i class="bx bx-list-minus"></i>Listeden Kaldır</a>
+            </li>
+            {% else %}
+            {% endif %}
+          </ul>
+        </div>
+      </th>
+    </tr>
+    {% endfor %}
+{% else %}
+  <tr>
+      <th class="title-table">
+        <a href="">
+          <span class="corner-stick"></span>
+          <h5>Herhangi bir içerik bulunmuyor!</h5>
+        </a>
+      </th>
+    </tr>
+{% endif %}
+   
+  </tbody>
+</table>
+{% endblock container %}
+
+{% block popup %}
+<div class="popup-container" id="popup-container-list">
+      <div class="popup">
+        <div class="popup-inner">
+          <div class="popup-header">
+            <h1>Listene Görsel Ekle</h1>
+            <i class="bx bx-x"></i>
+          </div>
+          <div class="content">
+            <div class="backdrop-image-list" style="background: url(/static/images/list-sml.jpg) 
+            no-repeat top center / cover;"></div>
+            <form
+              action="/upload_image?query=list&list_id={{list.id}}"
+              method="POST" id="imageUploader" enctype=multipart/form-data>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <label for="list-img">Liste Görseli</label>
+              <input type="file" name="image_file" accept="image/*" required/>
+                <button type="submit">Görseli Ekle</button>
+            </form>            
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+<div class="popup-container" id="popup-container-user-list">
+    <div class="popup">
+      <div class="popup-inner">
+        <div class="popup-header">
+          <h1>Listelerin</h1>
+          <i class="bx bx-x"></i>
+        </div>
+        <div class="content" id="listContent">     
+        </div>
+      </div>
+    </div>
+
+{% endblock popup %}   
+
+
+ {% block script %}
+<script src="{{url_for('static', filename='script/list_actions.js')}}"></script>
+{% endblock script %}

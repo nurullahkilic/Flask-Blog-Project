@@ -1,0 +1,226 @@
+{% extends "layout.html" %} {% block title %} {{article.title}} {% endblock
+title %} {% block link %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/article.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/comment.css') }}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static',filename='styles/ckeditor.css') }}"
+/>
+{% endblock link %} {% block container %}
+<article>
+  {% if not article.is_publish %}
+  <h1><i>{{article.title}}</i></h1>
+  {% else %}
+  <h1>{{article.title}}</h1>
+  {% endif %}
+
+  <div class="article-actions">
+    <div class="author-bar">
+      <img src="{{article.get_user().profile_pic}}" alt="" / draggable="false">
+      <h4>
+        <a href="/@{{article.get_user().username}}" class="user-fullname"
+          >{{article.get_user().fullname}}</a
+        >
+        · {{article.created_date | timeAgo}}
+      </h4>
+    </div>
+    {% if "logged_in" in session and article.author_id==session["user_id"] %}
+    <a href="/update/{{article.slugify}}" class="article-follow article-primary"
+      >Makaleyi Düzenle</a
+    >
+    <a
+      href="javasicript:;"
+      onclick="deleteArticle('{{article.slugify}}')"
+      class="article-follow article-danger"
+      >Makaleyi Kaldır</a
+    >
+    {% else %} {% if "logged_in" in session and
+    article.get_user().is_following(session["user_id"]) %}
+    <a
+      href="javascript:;"
+      data-id="{{article.get_user().id}}"
+      class="article-follow article-primary"
+      id="articleFollowBtn"
+      >Takiptesin</a
+    >
+    {% else %}
+    <a
+      href="javascript:;"
+      data-id="{{article.get_user().id}}"
+      class="article-follow"
+      id="articleFollowBtn"
+      >Takip Et</a
+    >
+    {% endif %} {% endif %}
+  </div>
+</article>
+<div
+  class="article-image"
+  style="
+    background: url('{{article.thumbnail}}')
+      no-repeat center center / cover;
+  "
+></div>
+<div class="article-content ck-content">{{article.content | safe}}</div>
+<div class="article-buttons">
+  <div class="article-hr">
+    <span></span>
+    <div>*</div>
+    <span></span>
+  </div>
+  <div class="buttons-inner">
+    {% if "logged_in" in session and article.is_user_liked() %}
+    <div
+      class="article-btn btn-like liked"
+      id="articleLikeBtn"
+      data-id="{{article.id}}"
+    >
+      <a href="javascript:;">
+        <div class="button-icon">
+          <i class="bx bxs-bolt"></i>
+        </div>
+
+        <span class="btn-text">DEĞER VERDİN</span>
+        <div class="table-dropdown-content">
+          <div>Makaleye Değer Ver!</div>
+        </div>
+      </a>
+    </div>
+    {% else %}
+    <div
+      class="article-btn btn-like"
+      id="articleLikeBtn"
+      data-id="{{article.id}}"
+    >
+      <a href="javascript:;">
+        <div class="button-icon">
+          <i class="bx bxs-bolt"></i>
+        </div>
+
+        <span class="btn-text">DEĞER VER</span>
+        <div class="table-dropdown-content">
+          <div>Makaleye Değer Ver!</div>
+        </div>
+      </a>
+    </div>
+    {% endif %}
+    <div class="article-btn btn-twitter">
+      <a
+        href="http://twitter.com/share?text={{article.title}}&url=http://192.168.1.26:8080/article/{{article.slugify}}"
+        target="_blank"
+      >
+        <div class="button-icon">
+          <i class="bx bxl-twitter"></i>
+        </div>
+        <span class="btn-text">PAYLAŞ</span>
+        <div class="table-dropdown-content">
+          <div>Twitter Hesabında Paylaş!</div>
+        </div>
+      </a>
+    </div>
+    <div class="article-btn btn-facebook">
+      <a
+        href="http://www.facebook.com/sharer/sharer.php?u=http://192.168.1.26:8080/article/{{article.slugify}}&t={{article.title}}"
+        target="_blank"
+      >
+        <div class="button-icon">
+          <i class="bx bxl-facebook"></i>
+        </div>
+        <span class="btn-text">PAYLAŞ</span>
+        <div class="table-dropdown-content">
+          <div>Facebook Hesabında Paylaş!</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="comment-container" id="comment">
+  <div class="send-bar">
+    <img src="{{session['user_img'] or
+    'https://avatars.dicebear.com/api/jdenticon/farkli.svg?background=%23ffffff'}}"
+    alt="" / draggable="false">
+    <form
+      action=""
+      id="articleComment"
+      data-article-id="{{article.id}}"
+      data-type-id="1"
+    >
+      <input
+        autocomplete="off"
+        type="text"
+        placeholder="Yorumunuzu yazınız..."
+        id="commentInput"
+        required
+      />
+      <button type="submit"><i class="bx bxs-paper-plane"></i></button>
+    </form>
+  </div>
+  <div class="comment-content">
+    <div class="cmnt-header">
+      <span>Yorumlar</span>
+    </div>
+    <div class="comments">
+      <ul class="comment-list list-style-none">
+        {% if comments %} {% for comment in comments %} {% if "logged_in" in
+        session and comment.user_id==session["user_id"] %}
+        <li class="comment-inner">
+          <img src="{{comment.get_user().profile_pic}}" alt="" />
+          <div class="comment-data">
+            <h4>
+              <a href="/@{{comment.get_user().username}}" class="user-fullname"
+                >{{comment.get_user().fullname}}</a
+              >
+              · {{comment.created_date | timeAgo}}
+            </h4>
+            <div class="comment-msg">{{comment.content}}</div>
+          </div>
+          <i
+            data-id="{{comment.id}}"
+            data-article-id="{{article.id}}"
+            class="bx bx-trash-alt"
+          ></i>
+        </li>
+        {% else %}
+        <li class="comment-inner">
+          <img src="{{comment.get_user().profile_pic}}" alt="" />
+          <div class="comment-data">
+            <h4>
+              <a href="/@{{comment.get_user().username}}" class="user-fullname"
+                >{{comment.get_user().fullname}}</a
+              >
+              · {{comment.created_date | timeAgo}}
+            </h4>
+            <div class="comment-msg">{{comment.content}}</div>
+          </div>
+        </li>
+        {% endif %} {% endfor %} {% else %}
+        <li class="comment-inner">
+          <img src="/static/uploads/1_profile.jpg" alt="" />
+          <div class="comment-data">
+            <h4>
+              <a href="/@nurullah" class="user-fullname">Nurullah Kılıç</a> ·
+              bir aralar
+            </h4>
+            <div class="comment-msg">
+              Bu makaleye hiç yorum yazılmamış. İlk yorumu sen at!
+            </div>
+          </div>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock container %} {% block script %}
+<script src="{{url_for('static', filename='script/article.js')}}"></script>
+<script src="{{url_for('static', filename='script/comment.js')}}"></script>
+{% endblock script %}

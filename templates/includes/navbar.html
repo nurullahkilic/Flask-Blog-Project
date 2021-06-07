@@ -1,0 +1,141 @@
+  <nav class="navbar">
+      <ul class="navbar-left-side list-style-none">
+        <li>
+          <a href="/">
+            <img src="{{ url_for('static', filename='icons/rows-white.svg') }}" alt="" />
+          </a>
+        </li>
+        <ul class="navbar-social-media list-style-none">
+          <li>
+            <a href="">
+              <img src="{{ url_for('static', filename='icons/Facebook.svg') }}" alt="" />
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <img src="{{ url_for('static', filename='icons/Twitter.svg') }}" alt="" />
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <img src="{{ url_for('static', filename='icons/Instagram.svg') }}" alt="" />
+            </a>
+          </li>
+        </ul>
+      </ul>
+      <ul class="navbar-right-side list-style-none">
+        <li>
+          <a href="/"><i class="bx bx-home-alt"></i></a>
+        </li>
+        <li>
+          <a href="/search"><i class="bx bx-search-alt"></i></a>
+        </li>
+        <li class="noti">
+          <a href="javascript:void(0);">
+            <i class="bx bxs-bell bx-tada-hover"></i>
+            <div class="noti-count">9+</div>
+          </a>
+        </li>
+        {% if session["logged_in"] %}
+        <li class="user" onclick="toggleDropdown('user')">
+          <a href="javascript:void(0);"
+            ><img src="{{session['user_img']}}" alt="" /> {{session["fullname"]}}
+            <i class="bx bxs-down-arrow bx-xs"></i
+          ></a>
+          <div class="wrapper hidden">
+            <ul class="user-dropdown list-style-none">
+              <li class="profile-bar">
+                <a href="/@{{session['username']}}" style="   background: linear-gradient(270deg,rgba(0, 0, 0, 0.2) 10%, rgba(0, 0, 0, 0.69) 50%),
+                url({{ url_for('static',filename='images/banner.jpg') }} ) no-repeat center center /
+                  cover;">
+                  <i class="bx bxs-user-account"></i>
+                  @{{session["username"]}}
+                </a>
+              </li>
+              <li>
+                <a href="/addarticle">
+                  <i class="bx bxs-add-to-queue"></i>
+                  Makale Ekle
+                </a>
+              </li>
+              <li>
+                <a href="/dashboard">
+                  <i class="bx bxs-dashboard"></i>
+                  Kontrol Paneli
+                </a>
+              </li>
+              <li>
+                <a href="/account">
+                  <i class="bx bxs-cog"></i>
+                  Hesap Ayarları
+                </a>
+              </li>
+              <li>
+                <a href="/logout">
+                  <i class="bx bx-exit"></i>
+                  Çıkış Yap
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        {% else %}
+        <li class="login">
+          <a href="/login"><i class='bx bxs-door-open'></i></i> OTURUM AÇ </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <header class="header">
+      <div class="container-bottom">
+        <nav class="bottom-nav">
+          <div class="bottom-nav-item">
+            <a href="/" class="bottom-nav-link">
+              <i class="bx bx-home-alt"></i>
+            </a>
+          </div>
+          <div class="bottom-nav-item">
+            <a href="/search" class="bottom-nav-link">
+              <i class="bx bx-search-alt"></i>
+            </a>
+          </div>
+          <div class="bottom-nav-item">
+            <a href="/addarticle" class="bottom-nav-link">
+              <i class="bx bx-add-to-queue"></i>
+              <!-- <i class='bx bxs-add-to-queue' ></i> -->
+            </a>
+          </div>
+          <div class="bottom-nav-item">
+            <a href="/dashboard" class="bottom-nav-link">
+              <i class="bx bxs-dashboard"></i>
+
+            </a>
+          </div>
+          <div class="bottom-nav-item">
+            <a href="/@{{session['username']}}" class="bottom-nav-link">
+              {% if session["logged_in"] %}
+              <img src="{{session['user_img']}}" />
+              {% else %}
+               <i class="bx bxs-user-circle"></i> 
+              {% endif %}         
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

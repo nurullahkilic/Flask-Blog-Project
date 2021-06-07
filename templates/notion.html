@@ -1,0 +1,49 @@
+{% extends "product.html" %} 
+{% block notion %} 
+   <div class="notion-inner">          
+            <div class="text-content"><i
+                class="bx bxs-quote-alt-left bx-sm"
+                style="margin-right: 4px"
+              ></i>{{notion.html_out | safe}}</div>
+            <div class="text-bottom">
+              <span></span>
+              <div class="--user">
+                <a href="/@{{notion.get_user().username}}">{{notion.get_user().fullname}}</a> <span>  · {{notion.created_date | timeAgo}}</span>
+              </div>
+              <span></span>
+              <i class="bx bx-dots-horizontal-rounded"></i>
+              <div class="wrapper list-drop-notion hidden">
+                <ul class="list-dropdown list-style-none">
+                  <li>
+                    <a
+                      href="javascript:;"
+                      class="bookmarks"
+                      data-id="1"
+                      data-type="movie"
+                    >
+                      <i class='bx bxs-bolt' ></i>
+                      Görüşü Değerlendir
+                    </a>
+                  </li>
+                  <li>
+                    <a href=""><i class="bx bx-link-external"></i>Görüşe Git </a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a
+                      href="http://twitter.com/share?text=Im Sharing on Twitter&url=https://stackoverflow.com/users/2943186/youssef-subehi&hashtags=stackoverflow,example,youssefusf" target="_blank">
+                      <i class="bx bxl-twitter"></i>
+                      Twitter'da Paylaş
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank">
+                      <i class='bx bxl-facebook-circle' ></i></i>Facebook'da Paylaş</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+{% endblock notion %}
