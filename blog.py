@@ -49,7 +49,6 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'nurullahkilic@ogr.iu.edu.tr'
 app.config['MAIL_DEFAULT_SENDER'] = 'nurullahkilic@ogr.iu.edu.tr'
-app.config['MAIL_PASSWORD'] = '692Nk692'
 
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
