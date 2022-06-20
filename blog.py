@@ -55,29 +55,7 @@ csrf = CSRFProtect(app)
 mail = Mail(app)
 
 oauth = OAuth(app)
-google = oauth.register(
-    name='google',
-    client_id="44482969787-5trlkj01opuc6fi0l26h204joa6em4hm.apps.googleusercontent.com",
-    client_secret="ZL0Fkih33ev3fT0Bm05_56nF",
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    # This is only needed if using openId to fetch user info
-    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
-    client_kwargs={'scope': 'openid email profile'},
-)
 
-
-# rauth OAuth 2.0 service wrapper
-graph_url = 'https://graph.facebook.com/'
-facebook = OAuth2Service(name='facebook',
-                         authorize_url='https://www.facebook.com/dialog/oauth',
-                         access_token_url=graph_url + 'oauth/access_token',
-                         client_id="808925493045320",
-                         client_secret="0aaf5758f3fa67b5063a953e864b7b6c",
-                         base_url=graph_url)
 
 
 def check_file(name):
